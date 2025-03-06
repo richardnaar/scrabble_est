@@ -14,18 +14,6 @@
     <script>/* <iframe src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&headers=false" width="90%" height="600px"></iframe> */</script>
     <iframe src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&widget=true&chrome=false" width="90%" height="600px"></iframe>
 
-    <!-- Buttons Below -->
-    <div style="text-align: center; margin-top: 20px;">
-        <button onclick="showScrambledWord()" 
-                style="display: block; margin: 10px auto; padding: 10px 15px; font-size: 16px;">
-            Mõtleb...
-        </button>
-    
-        <button onclick="playNotification()" 
-                style="display: block; margin: 10px auto; padding: 10px 15px; font-size: 16px;">
-            Järgmine palun...
-        </button>
-    </div>
 
 <script>
   function enterFullScreen() {
@@ -52,65 +40,77 @@
     }, 2000); // Shows after 2 seconds
   };
 </script>
-    <script>
-  function showScrambledWord() {
-    var words = [
-      "lumi", "ammu", "ära", "sulas", "metsaveeres", "palju", "sinilolli",
-      "kimbukese", "sinilolli", "kinkisin", "ma", "sulle", "tänulikult", "selle", "eest", "suud", "sa", "andsid", "mulle",
-      "mis", "sest", "et", "pimeneb", "ja", "nutab", "vana", "kakk",
-      "näe", "taevaäär", "on", "helenduses", "uusik",
-      "ja", "linnutee", "on", "elav", "vastuhakk",
-      "kuid", "pimedusse", "viib", "meid", "öödetuusik",
-      "on", "muhumaal", "röökiv", "põõsas", "ja", "auru", "puhuvad", "sead",
-      "päike", "virutab", "oma", "kollase", "kinda", "tuulte", "sinisesse", "silmnäkku",
-      "jalutud", "tuuled", "taaruvad",
-      "ka", "keskpäevane", "päike", "on", "andrese", "häälega",
-      "ma", "istun", "päikeselõõsas",
-      "süda", "teisel", "pool", "halba", "ja", "head"
-    ];
+<!-- Buttons -->
+<div style="text-align: center; margin-top: 20px;">
+    <button onclick="showScrambledWord()" 
+            style="display: block; margin: 10px auto; padding: 10px 15px; font-size: 16px;">
+        Mõtleb...
+    </button>
 
-    // Pick a random word
-    var word = words[Math.floor(Math.random() * words.length)];
+    <button onclick="playNotification()" 
+            style="display: block; margin: 10px auto; padding: 10px 15px; font-size: 16px;">
+        Järgmine palun...
+    </button>
+</div>
 
-    // Scramble the letters
-    var scrambled = word.split('').sort(() => 0.5 - Math.random()).join('');
+<!-- Message Box -->
+<div id="messageBox" style="text-align: center; margin-top: 20px; font-size: 18px; font-weight: bold;"></div>
 
-    // Show the scrambled word in a pop-up
-    alert("Oota, mõtleb, kas '" + scrambled + "' on sõna?");
-  }
+<!-- JavaScript -->
+<script>
+    function showMessage(message) {
+        document.getElementById("messageBox").innerText = message;
+    }
 
-  function playNotification() {
-    var phrases = [
-      "Ära tõin!",
-      "Meil lobisemise eest palka ei maksta",
-      "Ei ole rätsepmeister Kiir rumal miis",
-      "Mis te vahite ringi!",
-      "Näita, näita! Ega ma ei vaata!",
-      "Prill, mida sa vahid?",
-      "Teen tsikli korda, olen siit mülkast läinud",
-      "Põgenemine, igatahes, aga mitte paaniline, vaid organiseeritud!",
-      "Ja kuigi te olete täiesti harimata mats, tantsin ma siiski teiega kui võrdne võrdsega…",
-      "Siuh-säuh present from pada kingdom",
-      "Sellel mehel pole ajusid. Ma ise nägin.",
-      "Mõnita, mõnita vanainimest!",
-      "Tahan käin, tahan ei käi, niivõrd mõnus olen!",
-      "Aktuaalne kaamera jääb nägemata!!!",
-      "Ma olen vist vapper mees.",
-      "Mõte maha, lähme ära!",
-      "Nööri ärge puutuge, seda läheb mul endal pärast vaja!",
-      "Tegelikult olen mina Liivimaa parim ratsutaja.",
-      "Kahju, et me kohtusime, sa rikkusid mul tänase päeva ära!",
-      "Mina oma otsust ei muuda!",
-      "Kas me oleme ikka õigel teel?",
-      "See ei ole lõpp, kõik kestab edasi. Kaitsku meid Jumal."
-    ];
+    function showScrambledWord() {
+        var words = [
+            "lumi", "ammu", "ära", "sulas", "metsaveeres", "palju", "sinilolli",
+            "kimbukese", "sinilolli", "kinkisin", "ma", "sulle", "tänulikult", "selle", "eest", "suud", "sa", "andsid", "mulle",
+            "mis", "sest", "et", "pimeneb", "ja", "nutab", "vana", "kakk",
+            "näe", "taevaäär", "on", "helenduses", "uusik",
+            "ja", "linnutee", "on", "elav", "vastuhakk",
+            "kuid", "pimedusse", "viib", "meid", "öödetuusik",
+            "on", "muhumaal", "röökiv", "põõsas", "ja", "auru", "puhuvad", "sead",
+            "päike", "virutab", "oma", "kollase", "kinda", "tuulte", "sinisesse", "silmnäkku",
+            "jalutud", "tuuled", "taaruvad",
+            "ka", "keskpäevane", "päike", "on", "andrese", "häälega",
+            "ma", "istun", "päikeselõõsas",
+            "süda", "teisel", "pool", "halba", "ja", "head"
+        ];
 
-    // Pick a random phrase
-    var phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        var word = words[Math.floor(Math.random() * words.length)];
+        var scrambled = word.split('').sort(() => 0.5 - Math.random()).join('');
+        showMessage("Oota, mõtleb, kas '" + scrambled + "' on sõna?");
+    }
 
-    // Show the phrase in a pop-up
-    alert(phrase);
-  }
-</script>
+    function playNotification() {
+        var phrases = [
+            "Ära tõin!",
+            "Meil lobisemise eest palka ei maksta",
+            "Ei ole rätsepmeister Kiir rumal miis",
+            "Mis te vahite ringi!",
+            "Näita, näita! Ega ma ei vaata!",
+            "Prill, mida sa vahid?",
+            "Teen tsikli korda, olen siit mülkast läinud",
+            "Põgenemine, igatahes, aga mitte paaniline, vaid organiseeritud!",
+            "Ja kuigi te olete täiesti harimata mats, tantsin ma siiski teiega kui võrdne võrdsega…",
+            "Siuh-säuh present from pada kingdom",
+            "Sellel mehel pole ajusid. Ma ise nägin.",
+            "Mõnita, mõnita vanainimest!",
+            "Tahan käin, tahan ei käi, niivõrd mõnus olen!",
+            "Aktuaalne kaamera jääb nägemata!!!",
+            "Ma olen vist vapper mees.",
+            "Mõte maha, lähme ära!",
+            "Nööri ärge puutuge, seda läheb mul endal pärast vaja!",
+            "Tegelikult olen mina Liivimaa parim ratsutaja.",
+            "Kahju, et me kohtusime, sa rikkusid mul tänase päeva ära!",
+            "Mina oma otsust ei muuda!",
+            "Kas me oleme ikka õigel teel?",
+            "See ei ole lõpp, kõik kestab edasi. Kaitsku meid Jumal."
+        ];
+
+        var phrase = phrases[Math.floor(Math.random() * phrases.length)];
+        showMessage(phrase);
+    }
 </body>
 </html>
