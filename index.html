@@ -13,5 +13,23 @@
     <h1>Estonian Scrabble</h1>
     <script>/* <iframe src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&headers=false" width="90%" height="600px"></iframe> */</script>
     <iframe src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&widget=true&chrome=false" width="90%" height="600px"></iframe>
+<script>
+  function enterFullScreen() {
+    var elem = document.documentElement; // The whole page
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Firefox
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE/Edge
+      elem.msRequestFullscreen();
+    }
+  }
+</script>
+
+<button onclick="enterFullScreen()" style="position: fixed; top: 10px; right: 10px; padding: 10px 15px; font-size: 16px;">
+  Fullscreen
+</button>   
 </body>
 </html>
