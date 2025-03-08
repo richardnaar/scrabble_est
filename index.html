@@ -125,14 +125,23 @@
     }
 </script>
 
-<!-- Small ASCII Camera in Bottom Right -->
-<div id="ascii-cam-container" style="position: fixed; bottom: 10px; right: 10px; width: 250px; height: 180px; overflow: hidden; background: black;">
-    <div id="ascii-cam" class="fade" style="transform: scale(0.5); transform-origin: top left;">
-        <div class="layers">
-            <pre id="r-output"></pre>
-            <pre id="g-output"></pre>
-            <pre id="b-output"></pre>
-        </div>
+<!-- Camera Toggle Button (Top Left) -->
+<button id="toggleCamera" onclick="toggleCamera()" 
+        style="position: fixed; top: 10px; left: 10px; padding: 10px 15px; font-size: 16px;">
+    Show Camera
+</button>
+
+<!-- Transparent Fullscreen ASCII Camera -->
+<div id="ascii-cam-container" style="
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100vw; height: 100vh; 
+    background: rgba(0, 0, 0, 0.3); /* Semi-transparent */
+    display: none; /* Hidden by default */
+    pointer-events: none; /* Allows clicks to pass through */
+    z-index: 9999;">
+    <div id="ascii-cam" class="fade" style="text-align: center; margin-top: 20vh; font-size: 2vw;">
+        <pre id="r-output"></pre>
     </div>
 </div>
 
@@ -140,12 +149,20 @@
 <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
 
 <script>
+    let cameraVisible = false;
+
+    function toggleCamera() {
+        cameraVisible = !cameraVisible;
+        document.getElementById("ascii-cam-container").style.display = cameraVisible ? "block" : "none";
+        document.getElementById("toggleCamera").innerText = cameraVisible ? "Hide Camera" : "Show Camera";
+    }
+
     (() => {
         'use strict';
 
         let interval;
-        let r_layer, g_layer, b_layer;
-        const palette = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']; // Improved contrast
+        let r_layer;
+        const palette = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']; // Better contrast
 
         const handle_video = stream => {
             const canvas = document.getElementById('canvas');
@@ -162,7 +179,6 @@
                 window.addEventListener('resize', () => set_canvas_dimensions(video, canvas, ctx));
                 set_canvas_dimensions(video, canvas, ctx);
                 play_video(video, canvas, ctx);
-
                 setTimeout(() => {
                     document.getElementById('ascii-cam').style.opacity = 1;
                 }, 1000);
@@ -185,35 +201,23 @@
                 image_data.slice(i * channels, i * channels + channels)
             );
 
-            let r_output = '', g_output = '', b_output = '';
+            let r_output = '';
             pixels.forEach((pixel, i) => {
                 if (i && i % canvas.width === 0) {
                     r_output += '\n';
-                    g_output += '\n';
-                    b_output += '\n';
                 }
 
                 const r_idx = Math.floor((pixel[0] / 255.0) * (palette.length - 1));
-                const g_idx = Math.floor((pixel[1] / 255.0) * (palette.length - 1));
-                const b_idx = Math.floor((pixel[2] / 255.0) * (palette.length - 1));
-
                 r_output += palette[r_idx];
-                g_output += palette[g_idx];
-                b_output += palette[b_idx];
             });
 
             r_layer.textContent = r_output;
-            g_layer.textContent = g_output;
-            b_layer.textContent = b_output;
-
             interval = setInterval(() => play_video(video, canvas, ctx), 33);
         };
 
         window.addEventListener('load', () => {
             if (navigator.mediaDevices) {
                 r_layer = document.getElementById('r-output');
-                g_layer = document.getElementById('g-output');
-                b_layer = document.getElementById('b-output');
 
                 navigator.mediaDevices
                     .getUserMedia({ video: {} })
@@ -223,7 +227,6 @@
                 handle_no_video();
             }
         });
-
     })();
 </script>
 </body>
