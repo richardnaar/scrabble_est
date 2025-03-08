@@ -36,21 +36,20 @@
 
 <!-- Camera Toggle Button (Top Left) -->
 <button id="toggleCamera" onclick="toggleCamera()" 
-        style="position: fixed; top: 10px; left: 10px; padding: 10px 15px; font-size: 16px;">
+        style="position: fixed; top: 10px; left: 10px; padding: 10px 15px; font-size: 16px; z-index: 10000;">
     Show Camera
 </button>
 
-<!-- Transparent Fullscreen ASCII Camera -->
+<!-- Fullscreen ASCII Camera Overlay (Over Game) -->
 <div id="ascii-cam-container" style="
     position: fixed; 
     top: 0; left: 0; 
     width: 100vw; height: 100vh; 
-    background: rgba(0, 0, 0, 0.5); /* Dark transparent background */
+    background: rgba(0, 0, 0, 0.4); /* Dark transparent background */
     display: none; /* Hidden by default */
-    pointer-events: none; /* Allows clicks to pass through */
     z-index: 9999;
-    color: white; /* Makes ASCII characters white for visibility */
-    font-size: 2vw; /* Bigger font size for clarity */
+    color: white; /* White text for visibility */
+    font-size: 1.5vw; /* Large text */
     text-align: center;">
     <pre id="ascii-output"></pre>
 </div>
@@ -72,7 +71,7 @@
 
         let interval;
         let asciiOutput;
-        const palette = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']; // Improved contrast set
+        const palette = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']; // Contrast adjusted
 
         const handle_video = stream => {
             const canvas = document.getElementById('canvas');
