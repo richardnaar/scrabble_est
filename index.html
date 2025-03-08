@@ -40,90 +40,6 @@
     }, 2000); // Shows after 2 seconds
   };
 </script>
-<!-- Buttons Positioned in the Upper Left -->
-<div style="position: fixed; top: 10px; left: 10px; display: flex; flex-direction: row; gap: 10px;">
-    <button onclick="showScrambledWord()" 
-            style="padding: 10px 15px; font-size: 16px;">
-        Mõtleb...
-    </button>
-
-    <button onclick="playNotification()" 
-            style="padding: 10px 15px; font-size: 16px;">
-        Järgmine palun...
-    </button>
-</div>
-
-<!-- JavaScript for Floating Message -->
-<script>
-    function showMessage(message) {
-        var msgBox = document.createElement("div");
-        msgBox.innerText = message;
-        msgBox.style.position = "fixed";
-        msgBox.style.bottom = "60px";
-        msgBox.style.left = "50%";
-        msgBox.style.transform = "translateX(-50%)";
-        msgBox.style.backgroundColor = "black";
-        msgBox.style.color = "white";
-        msgBox.style.padding = "10px 20px";
-        msgBox.style.borderRadius = "5px";
-        msgBox.style.fontSize = "18px";
-        msgBox.style.zIndex = "1000";
-        document.body.appendChild(msgBox);
-
-        setTimeout(() => msgBox.remove(), 3000); // Remove after 3 seconds
-    }
-
-    function showScrambledWord() {
-        var words = [
-            "lumi", "ammu", "ära", "sulas", "metsaveeres", "palju", "sinilolli",
-            "kimbukese", "sinilolli", "kinkisin", "ma", "sulle", "tänulikult", "selle", "eest", "suud", "sa", "andsid", "mulle",
-            "mis", "sest", "et", "pimeneb", "ja", "nutab", "vana", "kakk",
-            "näe", "taevaäär", "on", "helenduses", "uusik",
-            "ja", "linnutee", "on", "elav", "vastuhakk",
-            "kuid", "pimedusse", "viib", "meid", "öödetuusik",
-            "on", "muhumaal", "röökiv", "põõsas", "ja", "auru", "puhuvad", "sead",
-            "päike", "virutab", "oma", "kollase", "kinda", "tuulte", "sinisesse", "silmnäkku",
-            "jalutud", "tuuled", "taaruvad",
-            "ka", "keskpäevane", "päike", "on", "andrese", "häälega",
-            "ma", "istun", "päikeselõõsas",
-            "süda", "teisel", "pool", "halba", "ja", "head"
-        ];
-
-        var word = words[Math.floor(Math.random() * words.length)];
-        var scrambled = word.split('').sort(() => 0.5 - Math.random()).join('');
-        showMessage("Oota, mõtleb, kas '" + scrambled + "' on sõna?");
-    }
-
-    function playNotification() {
-        var phrases = [
-            "Ära tõin!",
-            "Meil lobisemise eest palka ei maksta",
-            "Ei ole rätsepmeister Kiir rumal miis",
-            "Mis te vahite ringi!",
-            "Näita, näita! Ega ma ei vaata!",
-            "Prill, mida sa vahid?",
-            "Teen tsikli korda, olen siit mülkast läinud",
-            "Põgenemine, igatahes, aga mitte paaniline, vaid organiseeritud!",
-            "Ja kuigi te olete täiesti harimata mats, tantsin ma siiski teiega kui võrdne võrdsega…",
-            "Siuh-säuh present from pada kingdom",
-            "Sellel mehel pole ajusid. Ma ise nägin.",
-            "Mõnita, mõnita vanainimest!",
-            "Tahan käin, tahan ei käi, niivõrd mõnus olen!",
-            "Aktuaalne kaamera jääb nägemata!!!",
-            "Ma olen vist vapper mees.",
-            "Mõte maha, lähme ära!",
-            "Nööri ärge puutuge, seda läheb mul endal pärast vaja!",
-            "Tegelikult olen mina Liivimaa parim ratsutaja.",
-            "Kahju, et me kohtusime, sa rikkusid mul tänase päeva ära!",
-            "Mina oma otsust ei muuda!",
-            "Kas me oleme ikka õigel teel?",
-            "See ei ole lõpp, kõik kestab edasi. Kaitsku meid Jumal."
-        ];
-
-        var phrase = phrases[Math.floor(Math.random() * phrases.length)];
-        showMessage(phrase);
-    }
-</script>
 
 <!-- Camera Toggle Button (Top Left) -->
 <button id="toggleCamera" onclick="toggleCamera()" 
@@ -180,7 +96,7 @@
                 set_canvas_dimensions(video, canvas, ctx);
                 play_video(video, canvas, ctx);
                 setTimeout(() => {
-                    document.getElementById('ascii-cam').style.opacity = 1;
+                    document.getElementById('ascii-cam').style.opacity = 0.8;
                 }, 1000);
             });
         };
