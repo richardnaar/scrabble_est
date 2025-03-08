@@ -57,21 +57,12 @@
             display: none;
             z-index: 1000;
             left: 2%;
-            /* Fixed position to the left of the title */
         }
 
         /* Unique positions for each dancer */
-        #dancer1 {
-            top: 300px;
-        }
-
-        #dancer2 {
-            top: 350px;
-        }
-
-        #dancer3 {
-            top: 400px;
-        }
+        #dancer1 { top: 300px; }
+        #dancer2 { top: 350px; }
+        #dancer3 { top: 400px; }
     </style>
 
     <!-- Firebase SDK -->
@@ -86,8 +77,7 @@
     <pre class="dancingMan" id="dancer2"></pre>
     <pre class="dancingMan" id="dancer3"></pre>
 
-    <iframe
-        src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&widget=true&chrome=false"></iframe>
+    <iframe src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&widget=true&chrome=false"></iframe>
 
     <canvas id="fireworksCanvas"></canvas>
 
@@ -100,7 +90,78 @@
     </button>
 
     <script>
-        // Firebase configuration
+        // ✅ FIRST: Define the Fireworks Function
+        function launchFireworks() {
+            const canvas = document.getElementById('fireworksCanvas');
+            const ctx = canvas.getContext('2d');
+
+            if (!canvas || !ctx) {
+                console.error("Fireworks canvas not found!");
+                return;
+            }
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let fireworks = [];
+
+            class Firework {
+                constructor(x, y) {
+                    this.particles = [];
+                    for (let i = 0; i < 100; i++) {
+                        this.particles.push({
+                            x: x,
+                            y: y,
+                            angle: Math.random() * Math.PI * 2,
+                            speed: Math.random() * 4 + 1,
+                            radius: Math.random() * 3 + 2,
+                            alpha: 1
+                        });
+                    }
+                }
+
+                update() {
+                    this.particles.forEach(p => {
+                        p.x += Math.cos(p.angle) * p.speed;
+                        p.y += Math.sin(p.angle) * p.speed;
+                        p.alpha -= 0.01;
+                    });
+                    this.particles = this.particles.filter(p => p.alpha > 0);
+                }
+
+                draw() {
+                    this.particles.forEach(p => {
+                        ctx.globalAlpha = p.alpha;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                        ctx.fill();
+                    });
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                fireworks.forEach(firework => {
+                    firework.update();
+                    firework.draw();
+                });
+                fireworks = fireworks.filter(fw => fw.particles.length > 0);
+                if (fireworks.length) requestAnimationFrame(animate);
+            }
+
+            for (let i = 0; i < 5; i++) {
+                const fw = new Firework(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height / 2
+                );
+                fireworks.push(fw);
+            }
+            animate();
+        }
+
+        // ✅ THEN: Initialize Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyC_H788scyjmgrn9AckBZxr1b1TlBpwrGk",
             authDomain: "wordgame-42248.firebaseapp.com",
@@ -111,18 +172,18 @@
             appId: "1:306551017820:web:43b94b8d77ba9b1b9df199"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Listen for fireworks event
+        // ✅ NOW: Set Up Firebase Listener AFTER Fireworks Are Defined
         database.ref('fireworks').on('value', (snapshot) => {
+            console.log("Fireworks triggered:", snapshot.val()); // Debugging
             if (snapshot.val() === true) {
+                console.log("Launching fireworks...");
                 launchFireworks();
             }
         });
 
-        // Fullscreen function
         function enterFullScreen() {
             let elem = document.documentElement;
             if (elem.requestFullscreen) elem.requestFullscreen();
@@ -131,7 +192,6 @@
             else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
         }
 
-        // Trigger fireworks across clients
         function triggerFireworks() {
             database.ref('fireworks').set(true);
             setTimeout(() => database.ref('fireworks').set(false), 10000);
@@ -156,7 +216,7 @@
 
         function updateDancingMen() {
             dancers.forEach((dancer, i) => {
-                dancer.textContent = frames[(frameIndex + i) % frames.length]; // Stagger animation
+                dancer.textContent = frames[(frameIndex + i) % frames.length];
             });
             frameIndex = (frameIndex + 1) % frames.length;
         }
@@ -166,7 +226,7 @@
                 dancer.style.display = "block";
             });
 
-            const interval = setInterval(updateDancingMen, 200); // Update animation
+            const interval = setInterval(updateDancingMen, 200);
 
             setTimeout(() => {
                 clearInterval(interval);
@@ -174,9 +234,8 @@
             }, 5000);
         }
 
-        // Randomly appear every 10 seconds
         setInterval(() => {
-            if (Math.random() < 0.1) { // 10% chance to appear
+            if (Math.random() < 0.1) {
                 showDancingMen();
             }
         }, 10000 * 30);
