@@ -90,21 +90,31 @@
     </button>
 
     <script>
-    window.onload = function () {
-            // Get screen dimensions
-            let screenWidth = window.screen.width;
-            let screenHeight = window.screen.height;
-            let windowWidth = Math.floor(screenWidth / 2); // Half the screen
-            let windowHeight = Math.floor(screenHeight * 0.9); // Slightly shorter than full height
+        window.onload = function () {
+            if (!sessionStorage.getItem("windowsOpened")) {
+                // Get screen dimensions
+                let screenWidth = window.screen.width;
+                let screenHeight = window.screen.height;
+                let windowWidth = Math.floor(screenWidth / 2); // Half the screen
+                let windowHeight = Math.floor(screenHeight * 0.9); // Slightly shorter than full height
     
-            // Open first window (left side)
-            let leftWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank", 
-                `width=${windowWidth},height=${windowHeight},left=0,top=0`);
+                // Ask user before opening windows (optional)
+                let confirmOpen = confirm("Do you want to open two Scrabble windows side by side?");
+                if (!confirmOpen) return; // Stop if user clicks 'Cancel'
     
-            // Open second window (right side)
-            let rightWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank", 
-                `width=${windowWidth},height=${windowHeight},left=${windowWidth},top=0`);
+                // Open first window (left side)
+                let leftWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank",
+                    `width=${windowWidth},height=${windowHeight},left=0,top=0`);
+    
+                // Open second window (right side)
+                let rightWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank",
+                    `width=${windowWidth},height=${windowHeight},left=${windowWidth},top=0`);
+    
+                // Mark that the windows have been opened (prevents multiple openings)
+                sessionStorage.setItem("windowsOpened", "true");
+            }
         };
+
         // ✅ FIRST: Define the Fireworks Function
         function launchFireworks() {
             const canvas = document.getElementById('fireworksCanvas');
