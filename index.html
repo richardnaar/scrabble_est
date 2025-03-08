@@ -90,6 +90,21 @@
     </button>
 
     <script>
+    window.onload = function () {
+            // Get screen dimensions
+            let screenWidth = window.screen.width;
+            let screenHeight = window.screen.height;
+            let windowWidth = Math.floor(screenWidth / 2); // Half the screen
+            let windowHeight = Math.floor(screenHeight * 0.9); // Slightly shorter than full height
+    
+            // Open first window (left side)
+            let leftWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank", 
+                `width=${windowWidth},height=${windowHeight},left=0,top=0`);
+    
+            // Open second window (right side)
+            let rightWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank", 
+                `width=${windowWidth},height=${windowHeight},left=${windowWidth},top=0`);
+        };
         // ✅ FIRST: Define the Fireworks Function
         function launchFireworks() {
             const canvas = document.getElementById('fireworksCanvas');
