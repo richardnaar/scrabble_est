@@ -125,9 +125,9 @@
     }
 </script>
 
-    <!-- Small Camera Box (Bottom Right) -->
-<div id="ascii-cam-container" style="position: fixed; bottom: 10px; right: 10px; width: 200px; height: 150px; overflow: hidden; background: black;">
-    <div id="ascii-cam" class="fade" style="transform: scale(0.3); transform-origin: top left;">
+<!-- Small ASCII Camera in Bottom Right -->
+<div id="ascii-cam-container" style="position: fixed; bottom: 10px; right: 10px; width: 250px; height: 180px; overflow: hidden; background: black;">
+    <div id="ascii-cam" class="fade" style="transform: scale(0.5); transform-origin: top left;">
         <div class="layers">
             <pre id="r-output"></pre>
             <pre id="g-output"></pre>
@@ -137,7 +137,7 @@
 </div>
 
 <video id="video" autoplay="true" style="display: none;"></video>
-<canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+<canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
 
 <script>
     (() => {
@@ -145,7 +145,7 @@
 
         let interval;
         let r_layer, g_layer, b_layer;
-        const palette = [' ', '.', '-', ':', '+', '*', '=', '%', '@', '#'];
+        const palette = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']; // Improved contrast
 
         const handle_video = stream => {
             const canvas = document.getElementById('canvas');
@@ -177,7 +177,7 @@
 
         const play_video = (video, canvas, ctx) => {
             clearInterval(interval);
-            ctx.drawImage(video, 0, 0, canvas.width * -1, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             const image_data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
             const channels = 4;
 
@@ -223,6 +223,7 @@
                 handle_no_video();
             }
         });
+
     })();
 </script>
 </body>
