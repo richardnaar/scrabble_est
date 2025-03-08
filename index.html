@@ -95,8 +95,9 @@
                 // Get screen dimensions
                 let screenWidth = window.screen.width;
                 let screenHeight = window.screen.height;
-                let windowWidth = Math.floor(screenWidth / 2); // Half the screen
-                let windowHeight = Math.floor(screenHeight * 0.9); // Slightly shorter than full height
+                let leftWindowWidth = Math.floor(screenWidth * 0.65);  // 65% of screen
+                let rightWindowWidth = Math.floor(screenWidth * 0.35); // 35% of screen
+                let windowHeight = Math.floor(screenHeight * 0.9); // 90% of screen height
     
                 // Ask user before opening windows (optional)
                 let confirmOpen = confirm("Do you want to open two Scrabble windows side by side?");
