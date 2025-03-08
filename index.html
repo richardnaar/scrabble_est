@@ -103,13 +103,13 @@
                 let confirmOpen = confirm("Do you want to open two Scrabble windows side by side?");
                 if (!confirmOpen) return; // Stop if user clicks 'Cancel'
     
-                // Open first window (left side)
+                // Open first window (left side) - 65% of screen
                 let leftWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank",
-                    `width=${windowWidth},height=${windowHeight},left=0,top=0`);
+                    `width=${leftWindowWidth},height=${windowHeight},left=0,top=0`);
     
-                // Open second window (right side)
+                // Open second window (right side) - 35% of screen
                 let rightWindow = window.open("https://richardnaar.github.io/scrabble_est/", "_blank",
-                    `width=${windowWidth},height=${windowHeight},left=${windowWidth},top=0`);
+                    `width=${rightWindowWidth},height=${windowHeight},left=${leftWindowWidth},top=0`);
     
                 // Mark that the windows have been opened (prevents multiple openings)
                 sessionStorage.setItem("windowsOpened", "true");
