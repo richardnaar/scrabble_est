@@ -104,7 +104,7 @@
         // Trigger fireworks across clients
         function triggerFireworks() {
             database.ref('fireworks').set(true);
-            setTimeout(() => database.ref('fireworks').set(false), 5000);
+            setTimeout(() => database.ref('fireworks').set(false), 10000);
         }
 
         // Canvas setup
