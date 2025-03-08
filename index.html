@@ -46,6 +46,32 @@
             top: 60px;
             right: 10px;
         }
+
+        /* Dancing Men Styles */
+        .dancingMan {
+            font-family: "Courier New", monospace;
+            white-space: pre;
+            position: absolute;
+            font-size: 14px;
+            line-height: 1.1;
+            display: none;
+            z-index: 1000;
+            left: 2%;
+            /* Fixed position to the left of the title */
+        }
+
+        /* Unique positions for each dancer */
+        #dancer1 {
+            top: 300px;
+        }
+
+        #dancer2 {
+            top: 350px;
+        }
+
+        #dancer3 {
+            top: 400px;
+        }
     </style>
 
     <!-- Firebase SDK -->
@@ -54,7 +80,11 @@
 </head>
 
 <body>
-    <h1>Scrabble Eesti</h1>
+    <h1 id="title">Scrabble Eesti</h1>
+
+    <pre class="dancingMan" id="dancer1"></pre>
+    <pre class="dancingMan" id="dancer2"></pre>
+    <pre class="dancingMan" id="dancer3"></pre>
 
     <iframe
         src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&widget=true&chrome=false"></iframe>
@@ -107,78 +137,49 @@
             setTimeout(() => database.ref('fireworks').set(false), 10000);
         }
 
-        // Canvas setup
-        const canvas = document.getElementById('fireworksCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        let fireworks = [];
-
-        class Firework {
-            constructor(x, y) {
-                this.particles = [];
-                for (let i = 0; i < 100; i++) {
-                    this.particles.push({
-                        x: x,
-                        y: y,
-                        angle: Math.random() * Math.PI * 2,
-                        speed: Math.random() * 4 + 1,
-                        radius: Math.random() * 3 + 2,
-                        alpha: 1
-                    });
-                }
-            }
-
-            update() {
-                this.particles.forEach(p => {
-                    p.x += Math.cos(p.angle) * p.speed;
-                    p.y += Math.sin(p.angle) * p.speed;
-                    p.alpha -= 0.01;
-                });
-                this.particles = this.particles.filter(p => p.alpha > 0);
-            }
-
-            draw() {
-                this.particles.forEach(p => {
-                    ctx.globalAlpha = p.alpha;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    ctx.fill();
-                });
-                ctx.globalAlpha = 1;
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            fireworks.forEach(firework => {
-                firework.update();
-                firework.draw();
-            });
-            fireworks = fireworks.filter(fw => fw.particles.length > 0);
-            if (fireworks.length) requestAnimationFrame(animate);
-        }
-
-        function launchFireworks() {
-            for (let i = 0; i < 10; i++) {
-                const fw = new Firework(
-                    Math.random() * canvas.width,
-                    Math.random() * canvas.height / 2
-                );
-                fireworks.push(fw);
-            }
-            animate();
-        }
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
         document.getElementById('ggBtn').addEventListener('click', () => {
             triggerFireworks();
         });
+
+        // Dancing Men Animation
+        const dancers = [
+            document.getElementById('dancer1'),
+            document.getElementById('dancer2'),
+            document.getElementById('dancer3')
+        ];
+        const frames = [
+            " O \n/|\\\n/ \\",
+            " O \n/|\\\n /\\",
+            " O \n/|\\\n/ \\"
+        ];
+        let frameIndex = 0;
+
+        function updateDancingMen() {
+            dancers.forEach((dancer, i) => {
+                dancer.textContent = frames[(frameIndex + i) % frames.length]; // Stagger animation
+            });
+            frameIndex = (frameIndex + 1) % frames.length;
+        }
+
+        function showDancingMen() {
+            dancers.forEach(dancer => {
+                dancer.style.display = "block";
+            });
+
+            const interval = setInterval(updateDancingMen, 200); // Update animation
+
+            setTimeout(() => {
+                clearInterval(interval);
+                dancers.forEach(dancer => dancer.style.display = "none");
+            }, 5000);
+        }
+
+        // Randomly appear every 10 seconds
+        setInterval(() => {
+            if (Math.random() < 0.1) { // 10% chance to appear
+                showDancingMen();
+            }
+        }, 10000 * 30);
 
     </script>
 </body>
