@@ -1,39 +1,185 @@
 <!DOCTYPE html>
 <html lang="et">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scrabble Online</title>
     <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        iframe { border: none; width: 90vw; height: 90vh; }
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            border: none;
+            width: 90vw;
+            height: 90vh;
+        }
+
+        #fireworksCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .button {
+            position: fixed;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        #fullscreenBtn {
+            top: 10px;
+            right: 10px;
+        }
+
+        #ggBtn {
+            top: 50px;
+            right: 10px;
+        }
     </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js"></script>
 </head>
+
 <body>
     <h1>Scrabble Eesti</h1>
-    <script>/* <iframe src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&headers=false" width="90%" height="600px"></iframe> */</script>
-    <iframe src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&widget=true&chrome=false" width="90%" height="600px"></iframe>
 
+    <iframe
+        src="https://docs.google.com/spreadsheets/d/1nT-_QMeKag7tyI_H3UEfpJjMGdsoiyLfCXMpt8yNy-I/edit?usp=sharing&widget=true&chrome=false"></iframe>
 
-<script>
-  function enterFullScreen() {
-    var elem = document.documentElement; // The whole page
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) { // Firefox
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) { // Chrome, Safari, Opera
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { // IE/Edge
-      elem.msRequestFullscreen();
-    }
-  }
-</script>
+    <canvas id="fireworksCanvas"></canvas>
 
-<button onclick="enterFullScreen()" style="position: fixed; top: 10px; right: 10px; padding: 10px 15px; font-size: 16px;">
-  Mine täisekraanile
-</button>   
+    <button id="fullscreenBtn" class="button" onclick="enterFullScreen()">
+        Mine täisekraanile
+    </button>
 
+    <button id="ggBtn" class="button">
+        GG 🎆
+    </button>
 
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC_H788scyjmgrn9AckBZxr1b1TlBpwrGk",
+            authDomain: "wordgame-42248.firebaseapp.com",
+            databaseURL: "https://wordgame-42248-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "wordgame-42248",
+            storageBucket: "wordgame-42248.appspot.com",
+            messagingSenderId: "306551017820",
+            appId: "1:306551017820:web:43b94b8d77ba9b1b9df199"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Listen for fireworks event
+        database.ref('fireworks').on('value', (snapshot) => {
+            if (snapshot.val() === true) {
+                launchFireworks();
+            }
+        });
+
+        // Fullscreen function
+        function enterFullScreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) elem.requestFullscreen();
+            else if (elem.mozRequestFullScreen) elem.mozRequestFullScreen();
+            else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+            else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+        }
+
+        // Trigger fireworks across clients
+        function triggerFireworks() {
+            database.ref('fireworks').set(true);
+            setTimeout(() => database.ref('fireworks').set(false), 5000);
+        }
+
+        // Canvas setup
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let fireworks = [];
+
+        class Firework {
+            constructor(x, y) {
+                this.particles = [];
+                for (let i = 0; i < 100; i++) {
+                    this.particles.push({
+                        x: x,
+                        y: y,
+                        angle: Math.random() * Math.PI * 2,
+                        speed: Math.random() * 4 + 1,
+                        radius: Math.random() * 3 + 2,
+                        alpha: 1
+                    });
+                }
+            }
+
+            update() {
+                this.particles.forEach(p => {
+                    p.x += Math.cos(p.angle) * p.speed;
+                    p.y += Math.sin(p.angle) * p.speed;
+                    p.alpha -= 0.01;
+                });
+                this.particles = this.particles.filter(p => p.alpha > 0);
+            }
+
+            draw() {
+                this.particles.forEach(p => {
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    ctx.fill();
+                });
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            fireworks.forEach(firework => {
+                firework.update();
+                firework.draw();
+            });
+            fireworks = fireworks.filter(fw => fw.particles.length > 0);
+            if (fireworks.length) requestAnimationFrame(animate);
+        }
+
+        function launchFireworks() {
+            for (let i = 0; i < 5; i++) {
+                const fw = new Firework(
+                    Math.random() * canvas.width,
+                    Math.random() * canvas.height / 2
+                );
+                fireworks.push(fw);
+            }
+            animate();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        document.getElementById('ggBtn').addEventListener('click', () => {
+            triggerFireworks();
+        });
+    </script>
 </body>
+
 </html>
