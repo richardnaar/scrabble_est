@@ -52,13 +52,14 @@
     position: fixed; 
     top: 0; left: 0; 
     width: 100vw; height: 100vh; 
-    background: rgba(0, 0, 0, 0.3); /* Semi-transparent */
+    background: rgba(0, 0, 0, 0.5); /* Dark transparent background */
     display: none; /* Hidden by default */
     pointer-events: none; /* Allows clicks to pass through */
-    z-index: 9999;">
-    <div id="ascii-cam" class="fade" style="text-align: center; margin-top: 20vh; font-size: 2vw;">
-        <pre id="r-output"></pre>
-    </div>
+    z-index: 9999;
+    color: white; /* Makes ASCII characters white for visibility */
+    font-size: 2vw; /* Bigger font size for clarity */
+    text-align: center;">
+    <pre id="ascii-output"></pre>
 </div>
 
 <video id="video" autoplay="true" style="display: none;"></video>
@@ -77,8 +78,8 @@
         'use strict';
 
         let interval;
-        let r_layer;
-        const palette = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']; // Better contrast
+        let asciiOutput;
+        const palette = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']; // Improved contrast set
 
         const handle_video = stream => {
             const canvas = document.getElementById('canvas');
@@ -95,16 +96,11 @@
                 window.addEventListener('resize', () => set_canvas_dimensions(video, canvas, ctx));
                 set_canvas_dimensions(video, canvas, ctx);
                 play_video(video, canvas, ctx);
-                setTimeout(() => {
-                    document.getElementById('ascii-cam').style.opacity = 0.1;
-                }, 1000);
             });
         };
 
         const handle_no_video = () => {
-            setTimeout(() => {
-                document.getElementById('ascii-cam').style.opacity = 1;
-            }, 1000);
+            console.log("No camera access.");
         };
 
         const play_video = (video, canvas, ctx) => {
@@ -117,24 +113,25 @@
                 image_data.slice(i * channels, i * channels + channels)
             );
 
-            let r_output = '';
+            let asciiFrame = '';
             pixels.forEach((pixel, i) => {
                 if (i && i % canvas.width === 0) {
-                    r_output += '\n';
+                    asciiFrame += '\n';
                 }
 
-                const r_idx = Math.floor((pixel[0] / 255.0) * (palette.length - 1));
-                r_output += palette[r_idx];
+                const brightness = (pixel[0] * 0.3 + pixel[1] * 0.59 + pixel[2] * 0.11) / 255.0;
+                const charIndex = Math.floor(brightness * (palette.length - 1));
+                asciiFrame += palette[charIndex];
             });
 
-            r_layer.textContent = r_output;
-            interval = setInterval(() => play_video(video, canvas, ctx), 33);
+            asciiOutput.textContent = asciiFrame;
+            interval = setInterval(() => play_video(video, canvas, ctx), 50);
         };
 
         window.addEventListener('load', () => {
-            if (navigator.mediaDevices) {
-                r_layer = document.getElementById('r-output');
+            asciiOutput = document.getElementById('ascii-output');
 
+            if (navigator.mediaDevices) {
                 navigator.mediaDevices
                     .getUserMedia({ video: {} })
                     .then(handle_video)
